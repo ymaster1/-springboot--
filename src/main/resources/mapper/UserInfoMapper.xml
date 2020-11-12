@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ym.provider.mapper.UserInfoMapper">
+    <resultMap type="com.ym.provider.entity.UserInfo" id="UserInfoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="adder" column="adder" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="INTEGER"/>
+        <result property="country" column="country" jdbcType="VARCHAR"/>
+        <result property="city" column="city" jdbcType="VARCHAR"/>
+        <result property="concatPhone" column="concat_phone" jdbcType="VARCHAR"/>
+        <result property="statusFlag" column="status_flag" jdbcType="INTEGER"/>
+        <result property="serverCreateTime" column="server_create_time" jdbcType="TIMESTAMP"/>
+        <result property="serverUpdateTime" column="server_update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, user_name, user_id, adder, sex, country, city, concat_phone, status_flag, server_create_time, server_update_time    </sql>
+    <select id="getList" resultMap="UserInfoMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_info
+        where status_flag = 1
+    </select>
+    <select id="getPage" resultType="com.ym.provider.entity.UserInfo">
+        select
+        <include refid="Base_Column_List"/>
+        from user_info
+        where status_flag = 1
+    </select>
+</mapper>

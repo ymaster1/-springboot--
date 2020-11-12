@@ -1,0 +1,59 @@
+server:
+  port: 8001
+
+spring:
+  application:
+    name: provider
+
+
+
+
+
+  cache:
+    type: redis
+    cache-names: provider
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+      config:
+        refresh-enabled: true
+        file-extension: yaml
+        group: study
+        namespace: e84e3092-bfad-4ae5-a330-96800c42999a
+        extension-configs[0]:
+          dataId: ext_test.yaml
+          group: ext
+          refresh: true
+
+
+
+
+
+  output:
+    ansi:
+      enabled: detect
+logging:
+  config: classpath:log4j2-spring.xml
+
+
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: countsql
+#dubbo:
+#  scan:
+#    base-packages: com.ym.provider.dubbo
+#  protocol:
+#    name: dubbo
+#    port: 8888
+#  registry:
+#    address: 127.0.0.1:8848
