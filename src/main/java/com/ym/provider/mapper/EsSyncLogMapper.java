@@ -1,5 +1,6 @@
 package com.ym.provider.mapper;
 
+import com.ym.provider.commons.tkmybais.CommonsMapper;
 import com.ym.provider.entity.EsSyncLog;
 import org.apache.ibatis.annotations.Mapper;
 

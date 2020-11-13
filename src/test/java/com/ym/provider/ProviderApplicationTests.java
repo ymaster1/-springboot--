@@ -34,10 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SpringBootTest
 @Slf4j
@@ -47,14 +44,15 @@ class ProviderApplicationTests {
 
     /**
      * 创建一个空索引
-     *
+     * 存在会抛异常
      * @throws IOException
      */
     @Test
     void esAddIndex() throws IOException {
-        CreateIndexRequest request = new CreateIndexRequest("ymaster1");
+        CreateIndexRequest request = new CreateIndexRequest("ymaster2");
         CreateIndexResponse response = restHighLevelClient.indices().create(request, RequestOptions.DEFAULT);
         boolean acknowledged = response.isAcknowledged();
+        System.out.println(acknowledged);
         log.info("{}", JSONObject.toJSON(acknowledged));
     }
 
@@ -96,11 +94,36 @@ class ProviderApplicationTests {
         dto.setCountry("CN");
         dto.setSex(1);
         dto.setUserName("那个谁");
-        IndexRequest request = new IndexRequest("ymaster1");
+
+        IndexRequest request = new IndexRequest("ymaster2");
 //      如果没有特别要求可以不用传，es会自动生成无序唯一ID
 //        request.id("");
 //        需要指定解析的类型
         request.source(JSONObject.toJSONString(dto), XContentType.JSON);
+//        request.source(JSON.toJSON(dto), XContentType.JSON); 用toJSON会把整个json当成key,错误的
+        IndexResponse response = restHighLevelClient.index(request, RequestOptions.DEFAULT);
+        RestStatus status = response.status();
+        log.info("{}", JSONObject.toJSON(status));
+    }
+    /**
+     * 新增一条记录
+     *
+     * @throws IOException
+     */
+    @Test
+    void esAddDocByMap() throws IOException {
+        Map<String,Object> map = new HashMap<>();
+        map.put("adder","那条街");
+        map.put("city","达州");
+        map.put("concatPhone","999");
+        map.put("country","CN");
+        map.put("sex",1);
+        map.put("usserName","那个谁");
+        IndexRequest request = new IndexRequest("ymaster2");
+//      如果没有特别要求可以不用传，es会自动生成无序唯一ID
+//        request.id("");
+//        需要指定解析的类型
+        request.source(JSONObject.toJSONString(map), XContentType.JSON);
 //        request.source(JSON.toJSON(dto), XContentType.JSON); 用toJSON会把整个json当成key,错误的
         IndexResponse response = restHighLevelClient.index(request, RequestOptions.DEFAULT);
         RestStatus status = response.status();

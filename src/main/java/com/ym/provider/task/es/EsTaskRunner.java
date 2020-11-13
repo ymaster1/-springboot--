@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Component
 @Slf4j
-public class TaskRunner implements ApplicationRunner {
+public class EsTaskRunner implements ApplicationRunner {
 
     @Autowired
     private LockService lockService;

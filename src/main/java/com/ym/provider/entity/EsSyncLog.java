@@ -1,5 +1,6 @@
 package com.ym.provider.entity;
 
+import com.ym.provider.commons.tkmybais.BaseLogicEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,12 +23,6 @@ import java.util.Date;
 @Entity
 public class EsSyncLog extends BaseLogicEntity {
     private static final long serialVersionUID = 347626040810241707L;
-
-    /**
-     * 主键id
-     */
-    @Column(name = "id")
-    private Long id;
 
     /**
      * 同步时间
@@ -65,21 +60,5 @@ public class EsSyncLog extends BaseLogicEntity {
     @Column(name = "fail_log")
     private String failLog;
 
-    /**
-     * 是否可用 0 不可用 1可用
-     */
-    @Column(name = "status_flag")
-    private Integer statusFlag;
 
-    /**
-     * 系统创建时间
-     */
-    @Column(name = "server_create_time")
-    private Date serverCreateTime;
-
-    /**
-     * 系统更新时间
-     */
-    @Column(name = "server_update_time")
-    private Date serverUpdateTime;
 }

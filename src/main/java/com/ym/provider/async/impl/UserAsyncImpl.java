@@ -10,6 +10,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -18,9 +19,9 @@ import java.util.concurrent.Future;
  * @date 2020/10/22 14:53
  * @description
  */
-@Component
+@Service
 public class UserAsyncImpl implements UserAsync {
-    @Autowired
+    @Resource
     private UserInfoMapper userInfoMapper;
 
     @Override
