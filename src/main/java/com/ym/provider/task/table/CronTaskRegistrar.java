@@ -1,4 +1,4 @@
-package com.ym.provider.task.es;
+package com.ym.provider.task.table;
 
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.CronTask;

@@ -1,4 +1,4 @@
-package com.ym.provider.task.es;
+package com.ym.provider.task.table;
 
 import java.util.concurrent.ScheduledFuture;
 

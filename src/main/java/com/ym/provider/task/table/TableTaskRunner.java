@@ -1,8 +1,8 @@
-package com.ym.provider.task.es;
+package com.ym.provider.task.table;
 
 import com.ym.provider.commons.redis.LockService;
-import com.ym.provider.entity.EsSyncTask;
-import com.ym.provider.service.EsSyncTaskService;
+import com.ym.provider.entity.TimingTask;
+import com.ym.provider.service.TimingTaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,22 +19,22 @@ import java.util.List;
  */
 @Component
 @Slf4j
-public class EsTaskRunner implements ApplicationRunner {
-
-    @Autowired
-    private LockService lockService;
+public class TableTaskRunner implements ApplicationRunner {
     @Autowired
     private CronTaskRegistrar registrar;
     @Autowired
-    private EsSyncTaskService taskService;
+    private TimingTaskService taskService;
 
     /**
      * 获取所有生效的任务
      *
      * @return
      */
-    private List<EsSyncTask> getTasks() {
-        List<EsSyncTask> list = taskService.queryAllActive();
+    private List<TimingTask> getTasks() {
+        TimingTask task = new TimingTask();
+        task.setStatusFlag(true);
+        task.setTaskStatus(true);
+        List<TimingTask> list = taskService.queryList(task);
         if (CollectionUtils.isEmpty(list)) {
             log.warn("没有生效的定时任务待注册！");
         }
@@ -48,9 +48,9 @@ public class EsTaskRunner implements ApplicationRunner {
      */
     @Override
     public void run(ApplicationArguments args) {
-        List<EsSyncTask> tasks = this.getTasks();
+        List<TimingTask> tasks = this.getTasks();
         tasks.forEach(e -> {
-            Task task = new Task(e.getTaskName(), lockService, e.getSyncTable(), e.getIndexName());
+            Task task = new Task(e.getTaskName(), e.getServiceName(), e.getMethodName());
             registrar.addCronTask(task, e.getTaskCron());
         });
         log.info("所有任务已经加载完成！");

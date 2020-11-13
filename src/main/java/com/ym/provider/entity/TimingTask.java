@@ -1,9 +1,11 @@
 package com.ym.provider.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ym.provider.commons.tkmybais.BaseLogicEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,18 +13,18 @@ import javax.persistence.Table;
 import java.util.Date;
 
 /**
- * es数据同步任务表(EsSyncTask)表实体类
+ * 定时任务表(TimingTask)表实体类
  *
  * @author ymaster1
- * @since 2020-11-12 14:19:37
+ * @since 2020-11-13 15:33:36
  */
-@Table(name = "es_sync_task")
+@Table(name = "timing_task")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class EsSyncTask extends BaseLogicEntity {
-    private static final long serialVersionUID = -54764577275307717L;
+public class TimingTask extends BaseLogicEntity {
+    private static final long serialVersionUID = 325094380719788136L;
 
     /**
      * 任务名称
@@ -31,10 +33,10 @@ public class EsSyncTask extends BaseLogicEntity {
     private String taskName;
 
     /**
-     * 同步表
+     * 方法所在的service
      */
-    @Column(name = "sync_table")
-    private String syncTable;
+    @Column(name = "service_name")
+    private String serviceName;
 
     /**
      * 任务启用状态 0 停用   1  启用
@@ -55,9 +57,9 @@ public class EsSyncTask extends BaseLogicEntity {
     private String taskDesc;
 
     /**
-     * es索引名称
+     * 方法名称
      */
-    @Column(name = "index_name")
-    private String indexName;
+    @Column(name = "method_name")
+    private String methodName;
 
 }

@@ -2,6 +2,7 @@ package com.ym.provider;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ym.provider.commons.utils.ApplicationContextHolder;
 import com.ym.provider.entity.UserEsDto;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
@@ -34,6 +35,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 
 @SpringBootTest
@@ -221,6 +224,13 @@ class ProviderApplicationTests {
         Arrays.stream(response.getHits().getHits()).forEach(e->{
             log.info("{}", JSONObject.toJSON(e));
         });
+    }
+    @Test
+    public void testTask() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Object bean = ApplicationContextHolder.getBean("timingTaskService");
+        Method testTask = bean.getClass().getDeclaredMethod("testTask", null);
+        testTask.invoke(bean);
+        System.out.println(bean.getClass().getName());
     }
 
 }
