@@ -2,8 +2,10 @@ package com.ym.provider;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ym.provider.commons.ext.YmAnnoTest;
 import com.ym.provider.commons.utils.ApplicationContextHolder;
 import com.ym.provider.entity.UserEsDto;
+import com.ym.provider.entity.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.bulk.BulkRequest;
@@ -231,6 +233,14 @@ class ProviderApplicationTests {
         Method testTask = bean.getClass().getDeclaredMethod("testTask", null);
         testTask.invoke(bean);
         System.out.println(bean.getClass().getName());
+    }
+    @Test
+    public void TestExt(){
+//        YmAnnoTest ymAnnoTest = ApplicationContextHolder.getBean(YmAnnoTest.class);
+        YmAnnoTest ymAnnoTest = ApplicationContextHolder.getBean("ymAnnoTest");
+        UserInfo userInfo = ApplicationContextHolder.getBean("userInfo");
+        log.info("自定义注解扫描生效{}",ymAnnoTest.getClass().getName());
+        log.info("自定义BeanDefinitionRegistryPostProcessor生效{}",userInfo.getClass().getName());
     }
 
 }

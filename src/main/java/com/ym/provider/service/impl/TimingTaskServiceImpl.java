@@ -3,8 +3,11 @@ package com.ym.provider.service.impl;
 import com.ym.provider.entity.TimingTask;
 import com.ym.provider.mapper.TimingTaskMapper;
 import com.ym.provider.service.TimingTaskService;
+import com.ym.provider.task.table.CronTaskRegistrar;
+import com.ym.provider.task.table.Task;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -23,6 +26,8 @@ import java.util.List;
 public class TimingTaskServiceImpl implements TimingTaskService {
     @Resource
     private TimingTaskMapper timingTaskmapper;
+    @Resource
+    private CronTaskRegistrar registrar;
 
     @Override
     public void testTask() {
@@ -53,26 +58,37 @@ public class TimingTaskServiceImpl implements TimingTaskService {
     }
 
     /**
-     * 新增数据
+     * 新增任务，并默认启动
      *
      * @param timingTask 实例对象
      * @return 实例对象
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean insert(TimingTask timingTask) {
-        return this.timingTaskmapper.insert(timingTask) > 0;
+//        强制设置为启动
+        timingTask.setTaskStatus(true);
+        int insert = this.timingTaskmapper.insert(timingTask);
+        if (insert > 0) {
+//            新增成功之后直接启动任务
+            registrar.addCronTask(new Task(timingTask.getTaskName(), timingTask.getServiceName(),
+                    timingTask.getMethodName()), timingTask.getTaskCron());
+            return true;
+        }
+        return false;
     }
 
     /**
-     * 修改数据
+     * 修改任务，需要先删除任务，再添加任务
      *
      * @param timingTask 实例对象
      * @return 实例对象
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean update(TimingTask timingTask) {
-
-        return this.timingTaskmapper.updateByPrimaryKeySelective(timingTask) > 0;
+        int update = this.timingTaskmapper.updateByPrimaryKeySelective(timingTask);
+        return true;
     }
 
     /**
