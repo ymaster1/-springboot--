@@ -5,12 +5,16 @@ import com.ym.provider.commons.redis.LockService;
 import com.ym.provider.commons.redis.redisson.RedissonLockService;
 import com.ym.provider.commons.utils.ApplicationContextHolder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author ymaster1
@@ -39,7 +43,36 @@ public class Task implements Runnable {
      * 要执行的方法名称
      */
     private String methodName;
-    private static final String MODIFIER = "public";
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(taskName, serviceName, methodName);
+    }
+
+    /**
+     * 需要重写来保证属性相等的对象即是同一对象
+     * Object默认的equals只能保证引用相等的对象是同一对象
+     *
+     * @param o
+     * @return
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+//        如果类型不同返回false
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+//        最后比较属性，只要serviceName，methodName,taskName相同就表示对象相等
+        Task that = (Task) o;
+        return serviceName.equals(that.serviceName) &&
+                methodName.equals(that.methodName) &&
+                taskName.equals(that.taskName);
+    }
+
+    private static final String MODIFIER = "public final";
 
     public Task(String taskName, String serviceName, String methodName) {
         this.taskName = taskName;
@@ -50,24 +83,28 @@ public class Task implements Runnable {
 
     @Override
     public void run() {
-        Boolean lock = lockService.lock(taskName);
-        if (lock) {
-            try {
+
+
+        try {
+
+            Boolean lock = lockService.lock(taskName);
+            if (lock) {
                 log.info("[{}]-->[{}]:[{}]中[{}]方法开始执行", taskName,
                         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd " +
-                        "HH:mm:ss")), serviceName, methodName);
+                                "HH:mm:ss")), serviceName, methodName);
                 invoke();
                 log.info("[{}]-->[{}]:[{}]中[{}]方法执行结束", taskName,
                         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd " +
-                        "HH:mm:ss")), serviceName, methodName);
-            } catch (Exception e) {
-                log.info("[{}]:[{}]中[{}]方法执行异常", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd " +
-                        "HH:mm:ss")), serviceName, methodName);
-            } finally {
-                lockService.unLock(taskName);
+                                "HH:mm:ss")), serviceName, methodName);
+            } else {
+                log.error("未获取到分布式锁");
             }
-        } else {
-            log.error("未获取到分布式锁");
+        } catch (Exception e) {
+            log.info("[{}]:[{}]中[{}]方法执行异常", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM" +
+                    "-dd " +
+                    "HH:mm:ss")), serviceName, methodName);
+        } finally {
+            lockService.unLock(taskName);
         }
     }
 
@@ -81,6 +118,7 @@ public class Task implements Runnable {
         }
         Object bean = ApplicationContextHolder.getBean(serviceName);
         Method invokeMethod = getMethod(bean);
+        log.info(Modifier.toString(invokeMethod.getModifiers()));
 //        必须执行public方法
         if (invokeMethod == null || !MODIFIER.equals(Modifier.toString(invokeMethod.getModifiers()))) {
             log.error("不存在该方法[{}]", methodName);
@@ -93,7 +131,11 @@ public class Task implements Runnable {
      * @return 该service是否存在
      */
     private boolean serviceIsExit() {
-        return true;
+//        获取所有bean
+        ApplicationContext applicationContext = ApplicationContextHolder.getApplicationContext();
+        List<String> list = Arrays.asList(applicationContext.getBeanDefinitionNames());
+        log.info("容器中含有[{}]个bean", list.size());
+        return list.contains(serviceName);
     }
 
     /**

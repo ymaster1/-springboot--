@@ -18,8 +18,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class TableTaskControllerImpl implements TableTaskController {
     @Autowired
     private TimingTaskService service;
+
+
     @Override
-    public Response<Boolean> insertUser(TimingTask timingTask) {
+    public Response<Boolean> insertTask(TimingTask timingTask) {
         return Response.success(service.insert(timingTask));
+    }
+
+    @Override
+    public Response<Boolean> getTask(TimingTask timingTask) {
+        return Response.success(service.queryPage(timingTask));
+    }
+
+    @Override
+    public Response<Boolean> updateTask(TimingTask timingTask) {
+        return Response.success(service.update(timingTask));
     }
 }

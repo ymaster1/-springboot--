@@ -1,6 +1,9 @@
 package com.ym.provider.service;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
 import com.ym.provider.entity.TimingTask;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.List;
 
@@ -14,7 +17,7 @@ public interface TimingTaskService {
     /**
      * 数据库定时任务测试
      */
-    void testTask();
+    public void testTask();
 
     /**
      * 通过ID查询单条数据
@@ -33,11 +36,19 @@ public interface TimingTaskService {
     List<TimingTask> queryList(TimingTask timingTask);
 
     /**
+     * 分页查询
+     * @param timingTask
+     * @return
+     */
+    PageInfo<TimingTask> queryPage(TimingTask timingTask);
+
+    /**
      * 新增数据
      *
      * @param timingTask 实例对象
      * @return 是否成功
      */
+
     boolean insert(TimingTask timingTask);
 
     /**

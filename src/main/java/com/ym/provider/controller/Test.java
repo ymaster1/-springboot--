@@ -1,5 +1,6 @@
 package com.ym.provider.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.ym.provider.commons.exception.Response;
 import com.ym.provider.commons.utils.excel.ImportResponse;
 import com.ym.provider.entity.UserImportVo;
@@ -53,7 +54,7 @@ public interface Test {
      * @return
      */
     @PostMapping("/page")
-    Response<Boolean> getPage();
+    Response<PageInfo<UserInfo>> getPage();
 
     /**
      * 根据名称获取

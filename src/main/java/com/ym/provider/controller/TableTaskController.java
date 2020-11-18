@@ -21,5 +21,20 @@ public interface TableTaskController {
      * @return
      */
     @PostMapping("/insert")
-    Response<Boolean> insertUser(@RequestBody TimingTask timingTask);
+    Response<Boolean> insertTask(@RequestBody TimingTask timingTask);
+    /**
+     * 更新
+     * @param timingTask
+     * @return
+     */
+    @PostMapping("/update")
+    Response<Boolean> updateTask(@RequestBody TimingTask timingTask);
+
+    /**
+     * 查询
+     * @param timingTask
+     * @return
+     */
+    @PostMapping("/findAll")
+    Response<Boolean> getTask(@RequestBody TimingTask timingTask);
 }

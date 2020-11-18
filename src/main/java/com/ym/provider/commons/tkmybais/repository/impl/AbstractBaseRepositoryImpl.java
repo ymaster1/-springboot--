@@ -16,15 +16,15 @@ import java.util.List;
 /**
  * BaseService 实现类
  * 还是基于CommonsMapper来操作
+ *
  * @author Panda
  */
-public abstract class AbstractBaseRepositoryImpl<T  > implements BaseRepository<T> {
+public abstract class AbstractBaseRepositoryImpl<T> implements BaseRepository<T> {
 
     @Autowired
     private CommonsMapper<T> mapper;
 
     /**
-     *
      * @param record 待保存的数据
      * @return
      */
