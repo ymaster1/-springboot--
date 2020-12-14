@@ -23,7 +23,6 @@ import tk.mybatis.spring.annotation.MapperScan;
 @SpringBootApplication
 @MapperScan("com.ym.provider.mapper")
 @RestController
-
 public class ProviderApplication {
     @Autowired
     private ConfigurableApplicationContext applicationContext;

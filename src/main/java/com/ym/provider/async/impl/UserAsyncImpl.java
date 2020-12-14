@@ -25,7 +25,7 @@ public class UserAsyncImpl implements UserAsync {
     private UserInfoMapper userInfoMapper;
 
     @Override
-    @Async
+    @Async(value = "taskExecutorService")
     public Future<List<UserInfo>> getTrue() {
         UserInfo userInfo = new UserInfo();
         userInfo.setStatusFlag(true);
